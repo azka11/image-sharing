@@ -1,0 +1,28 @@
+version: '3'
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  image-sharing-app:
+    build: .
+    networks:
+      - app-tier
+    ports:
+      - '3000:3000'
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    environment:            
+      DATABASE_URL: "postgresql://postgres:password@postgres:5432/image_sharing_db?schema=public"
+
+  postgres: 
+    image: postgres:15
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: "password"
+    networks:
+      - app-tier
